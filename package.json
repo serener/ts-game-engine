@@ -18,10 +18,12 @@
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
     "ts-node": "^8.5.4",
-    "typescript": "^3.7.3"
+    "typescript": "^3.7.3",
+    "tsyringe": "^4.0.1"
   },
   "dependencies": {
-    "uuid": "latest",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.0.1",
+    "uuid": "latest"
   }
 }

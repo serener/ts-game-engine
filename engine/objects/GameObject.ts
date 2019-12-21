@@ -1,6 +1,7 @@
 import {v4 as uuid} from "uuid";
-import SearchIndexImpl from "../index/SearchIndexImpl";
+import SearchIndex from "../index/SearchIndex";
 import Vector2D from "../math/2DVector";
+import {autoInjectable, inject} from "tsyringe";
 
 enum ObjectType {
     FORCE,
@@ -8,48 +9,71 @@ enum ObjectType {
     COMPONENT
 }
 
+@autoInjectable()
 class GameObject {
-    private readonly tags: Array<string>;
-    private readonly type: ObjectType;
-    private readonly id: string;
-    private readonly position: Vector2D;
+    private _tags: Array<string>;
+    private _type: ObjectType;
+    private readonly _id: string;
+    private _position: Vector2D;
+    protected readonly searchIndex: SearchIndex;
 
-    constructor(type: ObjectType, position?: Vector2D) {
-        this.id = uuid();
-        this.tags = new Array<string>();
-        this.type = type;
-        this.position = position === undefined ? Vector2D.random() : position;
+    constructor(@inject(SearchIndex) private index?: SearchIndex) {
+        this._id = uuid();
+        this._tags = new Array<string>();
+        this._position = Vector2D.zero()
+        this.searchIndex = index;
     }
 
-    public getPosition(): Vector2D {
-        return this.position;
+    set type(value: ObjectType) {
+        if (this._type !== undefined) {
+            throw new Error("can't modify type")
+        }
+        this._type = value;
+        this.searchIndex.index(this);
     }
 
-    public getId(): string {
-        return this.id;
+    set position(value: Vector2D) {
+        this._position = value;
     }
 
-    public getType(): ObjectType {
-        return this.type;
+    get position(): Vector2D {
+        return this._position;
+    }
+
+    get id(): string {
+        return this._id;
+    }
+
+    get type(): ObjectType {
+        return this._type;
+    }
+
+    get tags(): Array<string> {
+        return this._tags;
     }
 
     public mark(tag: string | Array<string>) {
         if (Array.isArray(tag)) {
             tag.forEach(tag => {
-                if (!this.tags.includes(tag)) {
-                    this.tags.push(tag)
+                if (!this._tags.includes(tag)) {
+                    this._tags.push(tag)
                 }
             })
         } else {
-            if (!this.tags.includes(tag)) {
-                this.tags.push(tag)
+            if (!this._tags.includes(tag)) {
+                this._tags.push(tag)
             }
         }
-        SearchIndexImpl.instance().update(this);
+        this.searchIndex.update(this);
     }
 
-    public getTags(): Array<string> {
-        return this.tags;
+    hasTags(tags: Array<string>) {
+        for (var i = 0; i < tags.length; i++) {
+            if (!this._tags.includes(tags[i])) {
+                return false
+            }
+        }
+        return true
     }
 }
 

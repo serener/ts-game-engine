@@ -55,5 +55,9 @@ export default class Vector2D implements Vector {
         return new Vector2D(random(), random())
     }
 
+    public static zero(): Vector2D {
+        return new Vector2D(0,0)
+    }
+
 
 }

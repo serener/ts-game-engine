@@ -1,10 +1,22 @@
+import "reflect-metadata"
 import { expect } from 'chai';
-import SearchIndexImpl from "../index/SearchIndexImpl";
+import SearchIndex from "../index/SearchIndex";
+import ClassForInject from "./ClassForInject";
+import {container} from "tsyringe";
 
 describe('DIContainer', () => {
 
     it("register object", () => {
-        //expect(object.getId()).not.eq(null)
+
+        let resolved = container.resolve(SearchIndex);
+
+        let test = new ClassForInject();
+        let test2 = new ClassForInject();
+        expect(test).not.equals(test2);
+        expect(resolved).not.equals(undefined);
+        expect(test.index).not.equals(undefined);
+        expect(test.index).to.equals(resolved);
+
     })
 
 })
