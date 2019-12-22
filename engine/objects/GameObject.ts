@@ -5,6 +5,7 @@ import {autoInjectable, inject} from "tsyringe";
 
 enum ObjectType {
     FORCE,
+    OBJECT,
     BODY,
     COMPONENT
 }
@@ -15,6 +16,9 @@ class GameObject {
     private _type: ObjectType;
     private readonly _id: string;
     private _position: Vector2D;
+    private _created: number;
+    private _components: Array<GameObject>;
+
     protected readonly searchIndex: SearchIndex;
 
     constructor(@inject(SearchIndex) private index?: SearchIndex) {
@@ -22,6 +26,7 @@ class GameObject {
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
         this.searchIndex = index;
+        this._created = Date.now() / 1000;
     }
 
     set type(value: ObjectType) {
@@ -67,13 +72,27 @@ class GameObject {
         this.searchIndex.update(this);
     }
 
-    hasTags(tags: Array<string>) {
+    public addComponent(component: GameObject) {
+        this._components.push(component);
+    }
+
+    public time(): number {
+        return Date.now() - this._created;
+    }
+
+    public hasTags(tags: Array<string>) {
         for (var i = 0; i < tags.length; i++) {
             if (!this._tags.includes(tags[i])) {
                 return false
             }
         }
         return true
+    }
+
+    public update(context) {
+        this._components.forEach(component => {
+            component.update(context);
+        })
     }
 }
 
