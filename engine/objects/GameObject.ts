@@ -7,17 +7,19 @@ enum ObjectType {
     FORCE,
     OBJECT,
     BODY,
-    COMPONENT
+    COMPONENT,
+    DOT_COMPONENT
 }
 
 @autoInjectable()
 class GameObject {
+    private _parent: GameObject;
     private _tags: Array<string>;
     private _type: ObjectType;
-    private readonly _id: string;
     private _position: Vector2D;
-    private _created: number;
     private _components: Array<GameObject>;
+    private readonly _id: string;
+    private readonly _created: number;
 
     protected readonly searchIndex: SearchIndex;
 
@@ -38,10 +40,27 @@ class GameObject {
     }
 
     set position(value: Vector2D) {
+        if (this.parent !== undefined) {
+            this.parent.position = value;
+            return;
+        }
+
         this._position = value;
     }
 
+    get parent(): GameObject {
+        return this._parent;
+    }
+
+    set parent(value: GameObject) {
+        this._parent = value;
+    }
+
     get position(): Vector2D {
+        if (this.parent !== undefined) {
+            return this.parent._position;
+        }
+
         return this._position;
     }
 
@@ -73,10 +92,14 @@ class GameObject {
     }
 
     public addComponent(component: GameObject) {
+        component.parent = this;
         this._components.push(component);
     }
 
-    public time(): number {
+    public get time(): number {
+        if (this.parent !== undefined) {
+            return this.parent.time;
+        }
         return Date.now() - this._created;
     }
 

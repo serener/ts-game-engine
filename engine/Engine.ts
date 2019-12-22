@@ -35,7 +35,11 @@ export default class Engine {
 
         window.requestAnimationFrame(this.update);
     }
-
-
+}
+declare global {
+    interface Window {
+        Engine : any;
+    }
 }
 
+window.Engine = Engine;
