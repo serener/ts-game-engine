@@ -2,13 +2,16 @@ import {v4 as uuid} from "uuid";
 import SearchIndex from "../index/SearchIndex";
 import Vector2D from "../math/2DVector";
 import {autoInjectable, inject} from "tsyringe";
+import GraphContext from "../GraphContext";
 
 enum ObjectType {
     FORCE,
     OBJECT,
     BODY,
     COMPONENT,
-    DOT_COMPONENT
+    DOT_COMPONENT,
+    IMAGE_COMPONENT,
+    TEXT_COMPONENT
 }
 
 @autoInjectable()
@@ -17,6 +20,7 @@ class GameObject {
     private _tags: Array<string>;
     private _type: ObjectType;
     private _position: Vector2D;
+    private _rotationAngle : number;
     private _components: Array<GameObject>;
     private readonly _id: string;
     private readonly _created: number;
@@ -27,8 +31,10 @@ class GameObject {
         this._id = uuid();
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
+        this._rotationAngle = 0;
         this.searchIndex = index;
         this._created = Date.now() / 1000;
+        this._components = new Array<GameObject>();
     }
 
     set type(value: ObjectType) {
@@ -39,12 +45,15 @@ class GameObject {
         this.searchIndex.index(this);
     }
 
-    set position(value: Vector2D) {
-        if (this.parent !== undefined) {
-            this.parent.position = value;
-            return;
-        }
+    get rotationAngle(): number {
+        return this._rotationAngle;
+    }
 
+    set rotationAngle(value: number) {
+        this._rotationAngle = value;
+    }
+
+    set position(value: Vector2D) {
         this._position = value;
     }
 
@@ -57,10 +66,6 @@ class GameObject {
     }
 
     get position(): Vector2D {
-        if (this.parent !== undefined) {
-            return this.parent._position;
-        }
-
         return this._position;
     }
 
@@ -112,12 +117,25 @@ class GameObject {
         return true
     }
 
-    public update(context) {
+    public update(context : GraphContext) {
         this._components.forEach(component => {
+            component.beforeUpdate(context);
             component.update(context);
+            component.afterUpdate(context);
         })
     }
+
+    public beforeUpdate(context: GraphContext) {
+        context.translate(this._position);
+        context.rotate(this._rotationAngle);
+    }
+
+    public  afterUpdate(context: GraphContext) {
+        context.rotate(-this.rotationAngle)
+        context.translate(this.position.scale(-1))
+    }
 }
+
 
 export {GameObject, ObjectType};
 

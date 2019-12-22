@@ -3,17 +3,8 @@ import Vector from "./Vector";
 const LABEL_X = "x";
 const LABEL_Y = "y";
 
-// utils
-function random() {
-    return (Math.random() < 0.5 ? -1 : 1) * Math.random() * 1000;
-}
-
-function isNegative() {
-    return Math.random() < 0.5 ? -1 : 1;
-}
-
 export default class Vector2D implements Vector {
-    private readonly coordinates: Map<string, number>;
+    readonly coordinates: Map<string, number>;
 
     constructor(x: number, y: number) {
         this.coordinates = new Map<string, number>();
@@ -56,8 +47,19 @@ export default class Vector2D implements Vector {
     }
 
     public static zero(): Vector2D {
-        return new Vector2D(0,0)
+        return new Vector2D(0, 0);
+        ;
     }
 
-
 }
+
+// utils
+function random() {
+    return (Math.random() < 0.5 ? -1 : 1) * Math.random() * 1000;
+}
+
+function isNegative() {
+    return Math.random() < 0.5 ? -1 : 1;
+}
+
+

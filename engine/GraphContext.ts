@@ -13,10 +13,56 @@ export default class GraphContext {
         return this._context;
     }
 
-    arc(position : Vector2D, radius : number, startAngle : number, endAngle : number){
+    translate(position: Vector2D) {
+        this._context.translate(position.get("x"), position.get("y"));
+    }
+
+    rotate(angle: number) {
+        this._context.rotate(angle);
+    }
+
+    arc(radius: number, startAngle: number, endAngle: number) {
         this._context.beginPath();
-        this._context.arc(position.get("x"), position.get("y"), radius, startAngle, endAngle);
+        this._context.arc(0, 0, radius, startAngle, endAngle);
         this._context.fill();
+    }
+
+    drawImage(image: HTMLImageElement, width: number, height: number) {
+        this._context.drawImage(image, 0, 0, width, height);
+    }
+
+    fillText(text: string, font?: string, maxWidth ?: number) {
+        let oldFont = this._context.font;
+        if (font !== undefined) {
+            this._context.font = font;
+        }
+
+        this._context.fillText("text", 0, 0, maxWidth);
+
+        if (font !== undefined) {
+            this._context.font = oldFont;
+        }
+    }
+
+    strokeText(text: string, font?: string, maxWidth ?: number) {
+        let oldFont = this._context.font;
+        if (font !== undefined) {
+            this._context.font = font;
+        }
+
+        this._context.strokeText("text", 0, 0, maxWidth);
+
+        if (font !== undefined) {
+            this._context.font = oldFont;
+        }
+    }
+
+    set color(color: string | CanvasGradient | CanvasPattern) {
+        this._context.fillStyle = color;
+    }
+
+    get color(): string | CanvasGradient | CanvasPattern {
+        return this._context.fillStyle;
     }
 
     clear() {

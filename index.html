@@ -6,9 +6,60 @@
 </head>
 <body>
 
-<canvas id="cnv"></canvas>
+<canvas id="cnv" width="1024" height="768"></canvas>
 
 <script type="application/javascript" src="dist/bundle.js">
+</script>
+<script>
+
+    function edot(object, x, y) {
+        let dot = engine.createObject(ObjectType.DOT_COMPONENT);
+        dot.position = new Vector(x, y)
+        dot.color = "green";
+        object.addComponent(dot);
+    }
+
+    function eimage(object, image, x, y) {
+        let img = engine.createObject(ObjectType.IMAGE_COMPONENT);
+        img.image = image;
+        img.position = new Vector(x, y)
+        img.width = 400
+        img.height = 300
+        object.addComponent(img);
+        return img;
+    }
+
+    function etext(object, text, font, x, y) {
+        let txt = engine.createObject(ObjectType.TEXT_COMPONENT);
+        txt.text = text;
+        txt.font = font;
+        txt.color = "#ffcc00"
+        txt.position = new Vector(x, y)
+        object.addComponent(txt);
+        return txt;
+    }
+
+    let engine = new Engine();
+    engine.setCanvas(document.getElementById("cnv"))
+
+    let object = engine.createObject(ObjectType.OBJECT);
+
+    edot(object, 300, 9)
+    edot(object, 200, 109)
+    edot(object, 300, 109)
+    edot(object, 400, 109)
+    edot(object, 100, 209)
+    edot(object, 200, 209)
+    edot(object, 300, 209)
+    edot(object, 400, 209)
+    edot(object, 500, 209)
+
+    const image = new Image(60, 45);
+    image.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
+    let eimg = eimage(object, image, 275, 300)
+
+    let txt = etext(object, "HELLO world!", "30px Arial", 280, 400)
+
 </script>
 </body>
 </html>

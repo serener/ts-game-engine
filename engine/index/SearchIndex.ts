@@ -1,6 +1,9 @@
 import {GameObject, ObjectType} from "../objects/GameObject";
 import {singleton} from "tsyringe";
 
+let EMPTY_ARRAY = new Array<GameObject>();
+let EMPTY_SET = new Set<GameObject>();
+
 @singleton()
 class SearchIndex {
 
@@ -34,13 +37,15 @@ class SearchIndex {
         })
     }
 
-    getObjectByTag(tag: string | Array<string>) {
+    getObjectByTag(tag: string | Array<string>) : Set<GameObject> {
         if (!Array.isArray(tag)) {
-            return this.byTag.get(tag);
+            let res = this.byTag.get(tag)
+            return res === undefined ? EMPTY_SET : res;
         }
 
         if (tag.length == 1) {
-            return this.byTag.get(tag[0]);
+            let res = this.byTag.get(tag[0]);
+            return res === undefined ? EMPTY_SET : res;
         }
 
         let candidates = new Set<GameObject>();
@@ -67,7 +72,11 @@ class SearchIndex {
     }
 
     getObjectByType(type: ObjectType): Set<GameObject> {
-        return this.byType.get(type);
+        let res = this.byType.get(type);
+        if (res === undefined) {
+            return EMPTY_SET
+        }
+        return res;
     }
 }
 
