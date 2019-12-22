@@ -48,7 +48,6 @@ export default class Vector2D implements Vector {
 
     public static zero(): Vector2D {
         return new Vector2D(0, 0);
-        ;
     }
 
 }
