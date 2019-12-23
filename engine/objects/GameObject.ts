@@ -11,6 +11,7 @@ enum ObjectType {
     COMPONENT,
     DOT_COMPONENT,
     IMAGE_COMPONENT,
+    SPRITE_COMPONENT,
     TEXT_COMPONENT
 }
 
@@ -20,7 +21,8 @@ class GameObject {
     private _tags: Array<string>;
     private _type: ObjectType;
     private _position: Vector2D;
-    private _rotationAngle : number;
+    private _rotationAngle: number;
+    private _scale: number;
     private _components: Array<GameObject>;
     private readonly _id: string;
     private readonly _created: number;
@@ -32,9 +34,22 @@ class GameObject {
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
         this._rotationAngle = 0;
+        this._scale = 1;
         this.searchIndex = index;
-        this._created = Date.now() / 1000;
+        this._created = Date.now();
         this._components = new Array<GameObject>();
+    }
+
+    get created(): number {
+        return this._created;
+    }
+
+    get scale(): number {
+        return this._scale;
+    }
+
+    set scale(value: number) {
+        this._scale = value;
     }
 
     set type(value: ObjectType) {
@@ -117,7 +132,7 @@ class GameObject {
         return true
     }
 
-    public update(context : GraphContext) {
+    public update(context: GraphContext) {
         this._components.forEach(component => {
             component.beforeUpdate(context);
             component.update(context);
@@ -128,9 +143,11 @@ class GameObject {
     public beforeUpdate(context: GraphContext) {
         context.translate(this._position);
         context.rotate(this._rotationAngle);
+        context.scale(this._scale);
     }
 
-    public  afterUpdate(context: GraphContext) {
+    public afterUpdate(context: GraphContext) {
+        context.scale(1 / this._scale);
         context.rotate(-this.rotationAngle)
         context.translate(this.position.scale(-1))
     }

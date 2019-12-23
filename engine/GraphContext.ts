@@ -21,6 +21,10 @@ export default class GraphContext {
         this._context.rotate(angle);
     }
 
+    scale(factor: number) {
+        this._context.scale(factor, factor);
+    }
+
     arc(radius: number, startAngle: number, endAngle: number) {
         this._context.beginPath();
         this._context.arc(0, 0, radius, startAngle, endAngle);
@@ -29,6 +33,10 @@ export default class GraphContext {
 
     drawImage(image: HTMLImageElement, width: number, height: number) {
         this._context.drawImage(image, 0, 0, width, height);
+    }
+
+    drawSprite(image: HTMLImageElement, width: number, height: number, row: number, column: number) {
+        this._context.drawImage(image, width * column, height * row, width, height, 0, 0, width, height)
     }
 
     fillText(text: string, font?: string, maxWidth ?: number) {

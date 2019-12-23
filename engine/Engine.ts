@@ -7,6 +7,7 @@ import DotComponent from "./objects/components/DotComponent";
 import Vector2D from "./math/2DVector";
 import ImageComponent from "./objects/components/ImageComponent";
 import TextComponent from "./objects/components/TextComponent";
+import SpriteComponent from "./objects/components/SpriteComponent";
 
 @autoInjectable()
 export default class Engine {
@@ -28,17 +29,22 @@ export default class Engine {
         switch (type) {
             case ObjectType.DOT_COMPONENT: {
                 let object = new DotComponent();
-                object.type = ObjectType.DOT_COMPONENT;
+                object.type = type;
                 return object;
             }
             case ObjectType.IMAGE_COMPONENT: {
                 let object = new ImageComponent();
-                object.type = ObjectType.IMAGE_COMPONENT;
+                object.type = type;
+                return object;
+            }
+            case ObjectType.SPRITE_COMPONENT: {
+                let object = new SpriteComponent();
+                object.type = type;
                 return object;
             }
             case ObjectType.TEXT_COMPONENT: {
                 let object = new TextComponent();
-                object.type = ObjectType.TEXT_COMPONENT;
+                object.type = type;
                 return object;
             }
             default:

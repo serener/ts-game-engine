@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<canvas id="cnv" width="1024" height="768"></canvas>
+<canvas id="cnv" width="1024" height="768" style="background-color: darkgray"></canvas>
 
 <script type="application/javascript" src="dist/bundle.js">
 </script>
@@ -19,12 +19,27 @@
         object.addComponent(dot);
     }
 
+    function esprite(object, x, y, endcolumn, row) {
+        let image = new Image();
+        image.src = "shooter_character.png";
+        let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
+        sprite.image = image;
+        sprite.position = new Vector(x, y);
+        sprite.row = row;
+        sprite.startColumn = 0;
+        sprite.endColumn = endcolumn;
+        sprite.width = 256 / 8;
+        sprite.height = 224 / 7;
+        sprite.speed = 150;
+        sprite.scale = 4;
+        object.addComponent(sprite);
+        return sprite;
+    }
+
     function eimage(object, image, x, y) {
         let img = engine.createObject(ObjectType.IMAGE_COMPONENT);
         img.image = image;
         img.position = new Vector(x, y)
-        img.width = 400
-        img.height = 300
         object.addComponent(img);
         return img;
     }
@@ -54,12 +69,18 @@
     edot(object, 400, 209)
     edot(object, 500, 209)
 
-    const image = new Image(60, 45);
+    const image = new Image(300, 227);
     image.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
-    let eimg = eimage(object, image, 275, 300)
+    // let eimg = eimage(object, image, 275, 300)
 
-    let txt = etext(object, "HELLO world!", "30px Arial", 280, 400)
-
+    // let txt = etext(object, "HELLO world!", "30px Arial", 280, 400)
+    let sprite = esprite(object, 300, 400, 5, 0);
+    let sprite2 = esprite(object, 400, 400, 5, 1);
+    let sprite3 = esprite(object, 500, 400, 7, 2);
+    let sprite4 = esprite(object, 300, 500, 5, 3);
+    let sprite5 = esprite(object, 400, 500, 3, 4);
+    let sprite6 = esprite(object, 500, 500, 7, 5);
+    let sprite7 = esprite(object, 300, 600, 7, 6);
 </script>
 </body>
 </html>
