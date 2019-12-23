@@ -45,7 +45,7 @@ export default class GraphContext {
             this._context.font = font;
         }
 
-        this._context.fillText("text", 0, 0, maxWidth);
+        this._context.fillText(text, 0, 0, maxWidth);
 
         if (font !== undefined) {
             this._context.font = oldFont;

@@ -22,11 +22,13 @@ class GameObject {
     private _type: ObjectType;
     private _position: Vector2D;
     private _rotationAngle: number;
+    private _rotationCenter: Vector2D = Vector2D.zero();
     private _scale: number;
     private _components: Array<GameObject>;
+    private _visible: boolean = true;
+
     private readonly _id: string;
     private readonly _created: number;
-
     protected readonly searchIndex: SearchIndex;
 
     constructor(@inject(SearchIndex) private index?: SearchIndex) {
@@ -38,6 +40,23 @@ class GameObject {
         this.searchIndex = index;
         this._created = Date.now();
         this._components = new Array<GameObject>();
+    }
+
+
+    get visible(): boolean {
+        return this._visible;
+    }
+
+    set visible(value: boolean) {
+        this._visible = value;
+    }
+
+    get rotationCenter(): Vector2D {
+        return this._rotationCenter;
+    }
+
+    set rotationCenter(value: Vector2D) {
+        this._rotationCenter = value;
     }
 
     get created(): number {
@@ -134,21 +153,33 @@ class GameObject {
 
     public update(context: GraphContext) {
         this._components.forEach(component => {
-            component.beforeUpdate(context);
-            component.update(context);
-            component.afterUpdate(context);
+            if (component.visible) {
+                component.beforeUpdate(context);
+                component.update(context);
+                component.afterUpdate(context);
+            }
         })
     }
 
     public beforeUpdate(context: GraphContext) {
         context.translate(this._position);
-        context.rotate(this._rotationAngle);
         context.scale(this._scale);
+
+        //rotate around rotation center
+        context.translate(this._rotationCenter);
+        context.rotate(this._rotationAngle);
+
+        context.translate(this._rotationCenter.scale(-1));
     }
 
     public afterUpdate(context: GraphContext) {
-        context.scale(1 / this._scale);
+        //rotate back around rotation center
+        context.translate(this._rotationCenter);
         context.rotate(-this.rotationAngle)
+
+        context.translate(this._rotationCenter.scale(-1));
+
+        context.scale(1 / this._scale);
         context.translate(this.position.scale(-1))
     }
 }

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: './engine/Engine.ts',
     devtool: 'inline-source-map',
     module: {

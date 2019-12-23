@@ -10,7 +10,7 @@ export default class SpriteComponent extends GameObject {
     private _startColumn: number;
     private _endColumn: number;
     private _currentColumn: number;
-    private _iteration: number = 0;
+    private _lastUpdateTime: number = 0;
 
     get speed(): number {
         return this._speed;
@@ -70,15 +70,16 @@ export default class SpriteComponent extends GameObject {
 
     update(context: GraphContext) {
         if (this._startColumn === undefined) {
-            return
+            return;
         }
 
         if (this._currentColumn === undefined) {
             this._currentColumn = this._startColumn;
         }
 
-        if (this.time - (this._speed * this._iteration) > this.speed) {
-            this._iteration++;
+        if (this.time - this._lastUpdateTime > this.speed) {
+            this._lastUpdateTime = this.time
+
             this._currentColumn++;
             if (this._currentColumn > this._endColumn) {
                 this._currentColumn = this._startColumn;

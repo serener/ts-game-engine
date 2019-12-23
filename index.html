@@ -19,7 +19,7 @@
         object.addComponent(dot);
     }
 
-    function esprite(object, x, y, endcolumn, row) {
+    function esprite(object, x, y, endcolumn, row, width) {
         let image = new Image();
         image.src = "shooter_character.png";
         let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
@@ -28,7 +28,7 @@
         sprite.row = row;
         sprite.startColumn = 0;
         sprite.endColumn = endcolumn;
-        sprite.width = 256 / 8;
+        sprite.width = width !== undefined ? width : (256 / 8);
         sprite.height = 224 / 7;
         sprite.speed = 150;
         sprite.scale = 4;
@@ -73,14 +73,14 @@
     image.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg';
     // let eimg = eimage(object, image, 275, 300)
 
-    // let txt = etext(object, "HELLO world!", "30px Arial", 280, 400)
+    let txt = etext(object, "Game engine test", "30px Arial", 280, 400)
     let sprite = esprite(object, 300, 400, 5, 0);
     let sprite2 = esprite(object, 400, 400, 5, 1);
     let sprite3 = esprite(object, 500, 400, 7, 2);
     let sprite4 = esprite(object, 300, 500, 5, 3);
     let sprite5 = esprite(object, 400, 500, 3, 4);
-    let sprite6 = esprite(object, 500, 500, 7, 5);
-    let sprite7 = esprite(object, 300, 600, 7, 6);
+    let sprite6 = esprite(object, 500, 500, 7, 5, (256 / 8) - 1);
+    let sprite7 = esprite(object, 300, 200, 7, 6, (256 / 8) + 1 );
 </script>
 </body>
 </html>

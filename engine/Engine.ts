@@ -60,10 +60,12 @@ export default class Engine {
         this.context.clear();
 
         this.index.getObjectByType(ObjectType.OBJECT).forEach(
-            object => {
-                object.beforeUpdate(this.context)
-                object.update(this.context)
-                object.afterUpdate(this.context)
+            object  => {
+                if (object.visible) {
+                    object.beforeUpdate(this.context)
+                    object.update(this.context)
+                    object.afterUpdate(this.context)
+                }
             });
 
         window.requestAnimationFrame(this.update);
