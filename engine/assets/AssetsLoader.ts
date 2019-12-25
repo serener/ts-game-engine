@@ -7,6 +7,10 @@ export default class AssetsLoader {
         this._queue.push(asset.getPromise());
     }
 
+    public loadALL(asset: Array<Asset>) {
+        asset.forEach(this.load);
+    }
+
     public waitAll() : Promise<Asset[]> {
         return Promise.all(this._queue);
     }

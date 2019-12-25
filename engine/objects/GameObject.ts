@@ -27,6 +27,7 @@ class GameObject {
     private _scale: number;
     private _components: Array<GameObject>;
     private _visible: boolean = true;
+    private _name: string;
 
     private readonly _id: string;
     private readonly _created: number;
@@ -41,6 +42,14 @@ class GameObject {
         this.searchIndex = index;
         this._created = Date.now();
         this._components = new Array<GameObject>();
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    set name(value: string) {
+        this._name = value;
     }
 
     get drawRotationCenter(): false {

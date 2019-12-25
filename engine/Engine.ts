@@ -11,6 +11,7 @@ import SpriteComponent from "./objects/components/SpriteComponent";
 import ImageAsset from "./assets/ImageAsset";
 import {ImageResizer} from "./assets/ImageResizer";
 import {Asset} from "./assets/Asset";
+import AssetsLoader from "./assets/AssetsLoader";
 
 @autoInjectable()
 export default class Engine {
@@ -33,7 +34,7 @@ export default class Engine {
         return this._context;
     }
 
-    loadImageAsset(url: string, width ?: number, height ?: number): Promise<Asset> {
+    loadImageAsset(url: string, width ?: number, height ?: number): ImageAsset {
         let image;
         if (width !== undefined && height !== undefined) {
             image = new ImageAsset(url, this.resizer, width, height);
@@ -103,3 +104,4 @@ window.Engine = Engine;
 window.ObjectType = ObjectType;
 window.Vector = Vector2D;
 window.ImageAsset = ImageAsset;
+window.AssetLoader = AssetsLoader;
