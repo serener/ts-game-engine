@@ -23,6 +23,7 @@ class GameObject {
     private _position: Vector2D;
     private _rotationAngle: number;
     private _rotationCenter: Vector2D = Vector2D.zero();
+    private _drawRotationCenter: false;
     private _scale: number;
     private _components: Array<GameObject>;
     private _visible: boolean = true;
@@ -42,6 +43,13 @@ class GameObject {
         this._components = new Array<GameObject>();
     }
 
+    get drawRotationCenter(): false {
+        return this._drawRotationCenter;
+    }
+
+    set drawRotationCenter(value: false) {
+        this._drawRotationCenter = value;
+    }
 
     get visible(): boolean {
         return this._visible;
@@ -168,13 +176,23 @@ class GameObject {
         //rotate around rotation center
         context.translate(this._rotationCenter);
         context.rotate(this._rotationAngle);
-
         context.translate(this._rotationCenter.scale(-1));
     }
 
+    private showRotationCenter(context: GraphContext) {
+        if (this.drawRotationCenter) {
+            let oldColor = context.color;
+            context.color = "red"
+            context.arc(0.5, 0, Math.PI * 2)
+            context.color = oldColor;
+        }
+    }
+
     public afterUpdate(context: GraphContext) {
+
         //rotate back around rotation center
         context.translate(this._rotationCenter);
+        this.showRotationCenter(context);
         context.rotate(-this.rotationAngle)
 
         context.translate(this._rotationCenter.scale(-1));

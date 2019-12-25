@@ -1,14 +1,15 @@
-import {GameObject} from "../GameObject";
 import GraphContext from "../../GraphContext";
+import VisualComponent from "./VisualComponent";
+import ImageAsset from "../../assets/ImageAsset";
 
-export default class SpriteComponent extends GameObject {
-    private _image: HTMLImageElement;
-    private _width: number;
-    private _height: number;
+export default class SpriteComponent extends VisualComponent {
+    private _image: ImageAsset;
     private _row: number;
     private _speed: number;
     private _startColumn: number;
     private _endColumn: number;
+    private _padding: number = 0;
+
     private _currentColumn: number;
     private _lastUpdateTime: number = 0;
 
@@ -44,28 +45,20 @@ export default class SpriteComponent extends GameObject {
         this._endColumn = value;
     }
 
-    get image() {
+    get image(): ImageAsset {
         return this._image;
     }
 
-    set image(value) {
+    set image(value: ImageAsset) {
         this._image = value;
     }
 
-    get width() {
-        return this._width;
+    get padding(): number {
+        return this._padding;
     }
 
-    set width(value) {
-        this._width = value;
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    set height(value) {
-        this._height = value;
+    set padding(value: number) {
+        this._padding = value;
     }
 
     update(context: GraphContext) {
@@ -86,6 +79,6 @@ export default class SpriteComponent extends GameObject {
             }
         }
 
-        context.drawSprite(this._image, this._width, this.height, this._row, this._currentColumn);
+        context.drawSprite(this._image.image, this._width, this.height, this._row, this._currentColumn, this._padding);
     }
 }

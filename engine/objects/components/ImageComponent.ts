@@ -1,10 +1,9 @@
-import {GameObject} from "../GameObject";
 import GraphContext from "../../GraphContext";
+import VisualComponent from "./VisualComponent";
+import ImageAsset from "../../assets/ImageAsset";
 
-export default class ImageComponent extends GameObject {
-    private _image: HTMLImageElement;
-    private _width: number;
-    private _height: number;
+export default class ImageComponent extends VisualComponent {
+    private _image: ImageAsset;
 
     get image() {
         return this._image;
@@ -12,29 +11,15 @@ export default class ImageComponent extends GameObject {
 
     set image(value) {
         this._image = value;
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    set width(value) {
-        this._width = value;
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    set height(value) {
-        this._height = value;
+        if (this._width === undefined || this._height === undefined) {
+            this.width = this._image.width;
+            this.height = this._image.height;
+        }
     }
 
     update(context: GraphContext) {
-        if (this._width === undefined || this._height === undefined){
-            context.drawImage(this._image, this._image.width, this._image.height);
-            return;
-        }
-        context.drawImage(this._image, this._width, this.height);
+        let img = this._image.image;
+
+        context.drawImage(img, this._width, this.height);
     }
 }

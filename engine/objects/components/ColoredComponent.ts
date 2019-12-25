@@ -2,7 +2,6 @@ import {GameObject} from "../GameObject";
 import GraphContext from "../../GraphContext";
 
 export default class ColoredComponent extends GameObject {
-
     private _color: string | CanvasGradient | CanvasPattern = "blue";
     private _oldColor: string | CanvasGradient | CanvasPattern
 
