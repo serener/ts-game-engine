@@ -28,20 +28,43 @@ class GameObject {
     private _components: Array<GameObject>;
     private _visible: boolean = true;
     private _name: string;
+    private _layer: number = 0;
 
     private readonly _id: string;
     private readonly _created: number;
     protected readonly searchIndex: SearchIndex;
 
-    constructor(@inject(SearchIndex) private index?: SearchIndex) {
+    constructor(@inject(SearchIndex) private _index?: SearchIndex) {
         this._id = uuid();
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
         this._rotationAngle = 0;
         this._scale = 1;
-        this.searchIndex = index;
+        this.searchIndex = _index;
         this._created = Date.now();
         this._components = new Array<GameObject>();
+    }
+
+
+    get layer(): number {
+        return this._layer;
+    }
+
+    set layer(value: number) {
+        this._layer = value;
+        if (this._parent !== undefined) {
+            this.parent.layer = value;
+        } else {
+            this.searchIndex.update(this);
+        }
+    }
+
+    get index(): SearchIndex {
+        return this._index;
+    }
+
+    set index(value: SearchIndex) {
+        this._index = value;
     }
 
     get name(): string {
@@ -191,8 +214,8 @@ class GameObject {
     private showRotationCenter(context: GraphContext) {
         if (this.drawRotationCenter) {
             let oldColor = context.color;
-            context.color = "red"
-            context.arc(0.5, 0, Math.PI * 2)
+            context.color = "red";
+            context.arc(0.5, 0, Math.PI * 2);
             context.color = oldColor;
         }
     }
@@ -202,7 +225,7 @@ class GameObject {
         //rotate back around rotation center
         context.translate(this._rotationCenter);
         this.showRotationCenter(context);
-        context.rotate(-this.rotationAngle)
+        context.rotate(-this.rotationAngle);
 
         context.translate(this._rotationCenter.scale(-1));
 

@@ -1,8 +1,11 @@
 import {GameObject, ObjectType} from "../objects/GameObject";
 import {singleton} from "tsyringe";
+import {Layer} from "./Layer";
 
 let EMPTY_ARRAY = new Array<GameObject>();
 let EMPTY_SET = new Set<GameObject>();
+
+const MAX_LAYERS = 100;
 
 @singleton()
 class SearchIndex {
@@ -11,7 +14,13 @@ class SearchIndex {
     private byId: Map<string, GameObject> = new Map<string, GameObject>();
     private byType: Map<ObjectType, Set<GameObject>> = new Map<ObjectType, Set<GameObject>>();
 
+    private layers: Array<Layer>;
+
     constructor() {
+        this.layers = new Array<Layer>(MAX_LAYERS);
+        for (var i = 0; i < MAX_LAYERS; i++) {
+            this[i] = new Layer();
+        }
     }
 
     public index(object: GameObject) {
@@ -35,9 +44,13 @@ class SearchIndex {
             }
             array.add(object);
         })
+        if (object.layer > MAX_LAYERS) {
+            throw new Error(`Max layers count equal ${MAX_LAYERS} but used ${object.layer}`)
+        }
+        this.layers[object.layer].add(object);
     }
 
-    getObjectByTag(tag: string | Array<string>) : Set<GameObject> {
+    getObjectByTag(tag: string | Array<string>): Set<GameObject> {
         if (!Array.isArray(tag)) {
             let res = this.byTag.get(tag)
             return res === undefined ? EMPTY_SET : res;
@@ -78,6 +91,8 @@ class SearchIndex {
         }
         return res;
     }
+
+
 }
 
 export default SearchIndex;
