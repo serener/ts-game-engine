@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './engine/Engine.ts',
+    entry: './engine/Emgine.declare.ts',
     devtool: 'inline-source-map',
     module: {
         rules: [
