@@ -1,53 +1,50 @@
-import "reflect-metadata"
 import {GameObject, ObjectType} from "../objects/GameObject";
 import {expect} from "chai";
 import SearchIndex from "../index/SearchIndex";
-import {container} from "tsyringe";
+import Engine from "../Engine";
 
-function body(): GameObject {
-    let object = new GameObject();
-    object.type = ObjectType.BODY
+
+function body(engine : Engine): GameObject {
+    let object = engine.createObject(ObjectType.BODY);
     return object
 }
 
-function force(): GameObject {
-    let object = new GameObject();
-    object.type = ObjectType.FORCE
+function force(engine : Engine): GameObject {
+    let object = engine.createObject(ObjectType.FORCE);
     return object
 }
 
-function component(): GameObject {
-    let object = new GameObject();
-    object.type = ObjectType.COMPONENT
+function component(engine : Engine): GameObject {
+    let object = engine.createObject(ObjectType.COMPONENT);
+
     return object
 }
 
 describe('SearchIndex', () => {
 
-    beforeEach(()=>{
-        container.reset()
-        container.registerSingleton<SearchIndex>(SearchIndex);
-    })
-
     it("get object by Id", () => {
-        let object: GameObject = body();
-        let index = container.resolve(SearchIndex);
+        let engine = new Engine();
+
+        let object: GameObject = body(engine);
+        let index = engine.index;
         let founded = index.getObjectById(object.id);
         expect(object).to.eq(founded)
     });
 
     it("get objects by type", () => {
-        let body1 = body();
-        let body2 = body();
+        let engine = new Engine();
 
-        let component1 = component();
-        let component2 = component();
-        let component3 = component();
+        let body1 = body(engine);
+        let body2 = body(engine);
 
-        let force1 = force();
-        let force2 = force();
+        let component1 = component(engine);
+        let component2 = component(engine);
+        let component3 = component(engine);
 
-        let index = container.resolve(SearchIndex);
+        let force1 = force(engine);
+        let force2 = force(engine);
+
+        let index = engine.index;
 
         let founded = index.getObjectByType(ObjectType.BODY);
         expect(founded.size).to.equals(2);
@@ -67,16 +64,18 @@ describe('SearchIndex', () => {
     })
 
     it("get object by tag", () => {
-        let object = body();
+        let engine = new Engine();
+
+        let object = body(engine);
         object.mark(["hello", "world"]);
 
-        let object1 = force();
+        let object1 = force(engine);
         object1.mark(["this", "world"]);
 
-        let object2 = component();
+        let object2 = component(engine);
         object2.mark(["hello", "world"]);
 
-        let index = container.resolve(SearchIndex);
+        let index = engine.index;
         let founded = index.getObjectByTag("hello");
         expect(founded.size).to.eq(2);
         expect(founded.has(object)).to.eq(true);

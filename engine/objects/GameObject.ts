@@ -1,8 +1,8 @@
 import {v4 as uuid} from "uuid";
 import SearchIndex from "../index/SearchIndex";
 import Vector2D from "../math/2DVector";
-import {autoInjectable, inject} from "tsyringe";
 import GraphContext from "../GraphContext";
+import {Layer} from "../index/Layer";
 
 enum ObjectType {
     FORCE,
@@ -15,7 +15,6 @@ enum ObjectType {
     TEXT_COMPONENT
 }
 
-@autoInjectable()
 class GameObject {
     private _parent: GameObject;
     private _tags: Array<string>;
@@ -32,39 +31,51 @@ class GameObject {
 
     private readonly _id: string;
     private readonly _created: number;
-    protected readonly searchIndex: SearchIndex;
+    protected _searchIndex: SearchIndex;
+    protected readonly layers: Array<Layer>;
 
-    constructor(@inject(SearchIndex) private _index?: SearchIndex) {
+    constructor(private searchIndex?: SearchIndex) {
         this._id = uuid();
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
         this._rotationAngle = 0;
         this._scale = 1;
-        this.searchIndex = _index;
+        this._searchIndex = searchIndex;
         this._created = Date.now();
         this._components = new Array<GameObject>();
+        this.layers = new Array<Layer>(this._searchIndex.getMaxLayers())
+        for (let i = 0; i < this._searchIndex.getMaxLayers(); i++) {
+            this.layers[i] = new Layer();
+        }
     }
-
 
     get layer(): number {
         return this._layer;
     }
 
     set layer(value: number) {
-        this._layer = value;
-        if (this._parent !== undefined) {
-            this.parent.layer = value;
-        } else {
-            this.searchIndex.update(this);
+        if (value >= this._searchIndex.getMaxLayers()) {
+            throw new Error("Layer can't be bigger than " + this._searchIndex.getMaxLayers())
         }
+
+        if (this._parent === undefined) {
+            this._searchIndex.preUpdate(this);
+            this._layer = value;
+            this._searchIndex.update(this);
+        } else {
+            this._parent.layers[this._layer].delete(this);
+            this._layer = value;
+            this._parent.layers[this._layer].add(this);
+        }
+
     }
 
     get index(): SearchIndex {
-        return this._index;
+        return this._searchIndex;
     }
 
     set index(value: SearchIndex) {
-        this._index = value;
+        this._searchIndex = value;
     }
 
     get name(): string {
@@ -116,7 +127,7 @@ class GameObject {
             throw new Error("can't modify type")
         }
         this._type = value;
-        this.searchIndex.index(this);
+        this._searchIndex.index(this);
     }
 
     get rotationAngle(): number {
@@ -167,12 +178,13 @@ class GameObject {
                 this._tags.push(tag)
             }
         }
-        this.searchIndex.update(this);
+        this._searchIndex.update(this);
     }
 
     public addComponent(component: GameObject) {
         component.parent = this;
         this._components.push(component);
+        this.layers[component.layer].add(component);
     }
 
     public get time(): number {
@@ -192,13 +204,18 @@ class GameObject {
     }
 
     public update(context: GraphContext) {
-        this._components.forEach(component => {
-            if (component.visible) {
-                component.beforeUpdate(context);
-                component.update(context);
-                component.afterUpdate(context);
-            }
-        })
+        for (let i = 0; i < this._searchIndex.getMaxLayers(); i++) {
+            this.layers[i].objects.forEach(component => {
+                if (component.visible) {
+                    // if (this._parent === undefined){
+                    //     console.log(`layer[${i}].objects.size = ${this.layers[i].objects.size}`)
+                    // }
+                    component.beforeUpdate(context);
+                    component.update(context);
+                    component.afterUpdate(context);
+                }
+            })
+        }
     }
 
     public beforeUpdate(context: GraphContext) {
