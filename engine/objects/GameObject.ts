@@ -3,9 +3,10 @@ import SearchIndex from "../index/SearchIndex";
 import Vector2D from "../math/2DVector";
 import GraphContext from "../GraphContext";
 import {Layer} from "../index/Layer";
+import World from "../physics/World";
 
 enum ObjectType {
-    FORCE,
+    RIGID_BODY,
     OBJECT,
     BODY,
     COMPONENT,
@@ -34,7 +35,7 @@ class GameObject {
     protected _searchIndex: SearchIndex;
     protected readonly layers: Array<Layer>;
 
-    constructor(private searchIndex?: SearchIndex) {
+        constructor(private searchIndex?: SearchIndex) {
         this._id = uuid();
         this._tags = new Array<string>();
         this._position = Vector2D.zero()
@@ -59,6 +60,8 @@ class GameObject {
         }
 
         if (this._parent === undefined) {
+
+            //todo peace of shit
             this._searchIndex.preUpdate(this);
             this._layer = value;
             this._searchIndex.update(this);
@@ -122,7 +125,7 @@ class GameObject {
         this._scale = value;
     }
 
-    set type(value: ObjectType) {
+    set     type(value: ObjectType) {
         if (this._type !== undefined) {
             throw new Error("can't modify type")
         }

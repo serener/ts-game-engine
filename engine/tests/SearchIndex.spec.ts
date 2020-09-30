@@ -9,11 +9,6 @@ function body(engine : Engine): GameObject {
     return object
 }
 
-function force(engine : Engine): GameObject {
-    let object = engine.createObject(ObjectType.FORCE);
-    return object
-}
-
 function component(engine : Engine): GameObject {
     let object = engine.createObject(ObjectType.COMPONENT);
 
@@ -41,9 +36,6 @@ describe('SearchIndex', () => {
         let component2 = component(engine);
         let component3 = component(engine);
 
-        let force1 = force(engine);
-        let force2 = force(engine);
-
         let index = engine.index;
 
         let founded = index.getObjectByType(ObjectType.BODY);
@@ -57,10 +49,6 @@ describe('SearchIndex', () => {
         expect(founded.has(component2)).to.equals(true);
         expect(founded.has(component3)).to.equals(true);
 
-        founded = index.getObjectByType(ObjectType.FORCE);
-        expect(founded.size).to.equals(2);
-        expect(founded.has(force1)).to.equals(true);
-        expect(founded.has(force2)).to.equals(true);
     })
 
     it("get object by tag", () => {
@@ -68,9 +56,6 @@ describe('SearchIndex', () => {
 
         let object = body(engine);
         object.mark(["hello", "world"]);
-
-        let object1 = force(engine);
-        object1.mark(["this", "world"]);
 
         let object2 = component(engine);
         object2.mark(["hello", "world"]);
@@ -81,14 +66,10 @@ describe('SearchIndex', () => {
         expect(founded.has(object)).to.eq(true);
         expect(founded.has(object2)).to.eq(true);
 
-        founded = index.getObjectByTag("this");
-        expect(founded.size).to.eq(1);
-        expect(founded.has(object1)).to.eq(true);
 
         founded = index.getObjectByTag("world");
-        expect(founded.size).to.eq(3);
+        expect(founded.size).to.eq(2);
         expect(founded.has(object)).to.eq(true);
-        expect(founded.has(object1)).to.eq(true);
         expect(founded.has(object2)).to.eq(true);
 
         founded = index.getObjectByTag(["world", "hello"]);
@@ -100,9 +81,8 @@ describe('SearchIndex', () => {
         expect(founded.size).to.eq(0);
 
         founded = index.getObjectByTag(["world"]);
-        expect(founded.size).to.eq(3);
+        expect(founded.size).to.eq(2);
         expect(founded.has(object)).to.eq(true);
-        expect(founded.has(object1)).to.eq(true);
         expect(founded.has(object2)).to.eq(true);
     });
 

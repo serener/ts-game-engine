@@ -70,7 +70,7 @@ class SearchIndex {
         let self = this;
 
         tag.forEach(tag => {
-            self.byTag.get(tag).forEach(obj => {
+            self.byTag.get(tag)?.forEach(obj => {
                 candidates.add(obj);
             });
         })

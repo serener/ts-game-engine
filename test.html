@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Title</title>
 </head>
 <body>
 
@@ -11,122 +11,144 @@
 <script type="application/javascript" src="dist/bundle.js">
 </script>
 <script>
-    let engine = new Engine();
-    engine.setCanvas(document.getElementById("cnv"))
 
-    let shooter = engine.loadImageAsset("test-assets/shooter_character.png", 256 * 4, 224 * 4);
-    let warrior_sprite = engine.loadImageAsset("test-assets/warrior-attack-264x264.png");
+  let engine = new Engine();
+  engine.setCanvas(document.getElementById("cnv"))
 
-    let viking = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 256, 256);
-    let warriorImage = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 64 * 8, 64 * 8);
-    // let warriorImage = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 256 * 2, 256 * 2);
+  let shooter = engine.loadImageAsset("test-assets/shooter_character.png", 256 * 4, 224 * 4);
+  let warrior_sprite = engine.loadImageAsset("test-assets/warrior-attack-264x264.png");
 
-    Promise.all(
-        [
-            shooter.getPromise(),
-            warrior_sprite.getPromise(),
-            viking.getPromise(),
-            warriorImage.getPromise()
-        ]
-    ).then(all => {
+  let viking = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 256, 256);
+  let warriorImage = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 64 * 8, 64 * 8);
+  // let warriorImage = engine.loadImageAsset("test-assets/CartoonViking/Attack01/Attack01_01.png", 256 * 2, 256 * 2);
 
-        console.log(all)
+  Promise.all(
+    [
+      shooter.getPromise(),
+      warrior_sprite.getPromise(),
+      viking.getPromise(),
+      warriorImage.getPromise()
+    ]
+  ).then(all => {
 
-        function edot(object, x, y, color) {
-            let dot = engine.createObject(ObjectType.DOT_COMPONENT);
-            dot.position = new Vector(x, y)
-            dot.color = !color ? "green" : color;
-            object.addComponent(dot);
-        }
+    console.log(all)
 
-        function esprite(object, x, y, endcolumn, row, width) {
-            let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
-            sprite.image = shooter;
-            sprite.position = new Vector(x, y);
-            sprite.row = row;
-            sprite.startColumn = 0;
-            sprite.endColumn = endcolumn;
-            sprite.width = width !== undefined ? width : (shooter.width / 8);
-            sprite.height = (shooter.height) / 7;
-            sprite.padding = 1;
-            sprite.speed = 150;
-            sprite.scale = 1;
-            object.addComponent(sprite);
-            return sprite;
-        }
+    function edot(object, x, y, color)
+    {
+      let dot = engine.createObject(ObjectType.DOT_COMPONENT);
+      dot.position = new Vector(x, y)
+      dot.color = !color ? "green" : color;
+      object.addComponent(dot);
+    }
 
-        function ewarrior(object, x, y, endcolumn, row) {
-            let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
-            sprite.image = warrior_sprite;
-            sprite.position = new Vector(x, y);
-            sprite.row = row;
-            sprite.startColumn = 0;
-            sprite.endColumn = endcolumn;
-            sprite.width = warrior_sprite.width / 11;
-            sprite.height = warrior_sprite.height;
-            sprite.padding = 1;
-            sprite.speed = 100;
-            sprite.scale = 1;
-            object.addComponent(sprite);
-            return sprite;
-        }
+    function esprite(object, x, y, endcolumn, row, width)
+    {
+      let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
+      sprite.image = shooter;
+      sprite.position = new Vector(x, y);
+      sprite.row = row;
+      sprite.startColumn = 0;
+      sprite.endColumn = endcolumn;
+      sprite.width = width !== undefined ? width : (shooter.width / 8);
+      sprite.height = (shooter.height) / 7;
+      sprite.padding = 1;
+      sprite.speed = 150;
+      sprite.scale = 1;
+      object.addComponent(sprite);
+      return sprite;
+    }
 
-        function eimage(object, image, x, y) {
-            let img = engine.createObject(ObjectType.IMAGE_COMPONENT);
-            img.image = image;
-            img.position = new Vector(x, y)
-            img.scale = 1;
-            object.addComponent(img);
-            return img;
-        }
+    function ewarrior(object, x, y, endcolumn, row)
+    {
+      let sprite = engine.createObject(ObjectType.SPRITE_COMPONENT);
+      sprite.image = warrior_sprite;
+      sprite.position = new Vector(x, y);
+      sprite.row = row;
+      sprite.startColumn = 0;
+      sprite.endColumn = endcolumn;
+      sprite.width = warrior_sprite.width / 11;
+      sprite.height = warrior_sprite.height;
+      sprite.padding = 1;
+      sprite.speed = 100;
+      sprite.scale = 1;
+      object.addComponent(sprite);
+      return sprite;
+    }
 
-        function etext(object, text, font, x, y) {
-            let txt = engine.createObject(ObjectType.TEXT_COMPONENT);
-            txt.text = text;
-            txt.font = font;
-            txt.color = "#ffcc00"
-            txt.position = new Vector(x, y)
-            object.addComponent(txt);
-            return txt;
-        }
+    function eimage(object, image, x, y)
+    {
+      let img = engine.createObject(ObjectType.IMAGE_COMPONENT);
+      img.image = image;
+      img.position = new Vector(x, y)
+      img.scale = 1;
+      object.addComponent(img);
+      return img;
+    }
 
+    function etext(object, text, font, x, y)
+    {
+      let txt = engine.createObject(ObjectType.TEXT_COMPONENT);
+      txt.text = text;
+      txt.font = font;
+      txt.color = "#ffcc00"
+      txt.position = new Vector(x, y)
+      object.addComponent(txt);
+      return txt;
+    }
 
-        let object = engine.createObject(ObjectType.OBJECT);
-        //       *
-        edot(object, 300, 9)
-        //    *  *  *
-        edot(object, 200, 109)
-        edot(object, 300, 109)
-        edot(object, 400, 109)
-        // *  *  *  *  *
-        edot(object, 100, 209)
-        edot(object, 200, 209)
-        edot(object, 300, 209)
-        edot(object, 400, 209)
-        edot(object, 500, 209)
-        //        *
-        edot(object, 300, 259, "brown")
-        //        *
-        edot(object, 300, 309, "brown")
+    resetPosition = function(object){
+      object.position = Vector.zero();
+    }
 
-        // eimage(object, viking, 400, 0)
-        //
-        //
-        //  vikingObject = eimage(object, warriorImage, 0, 0)
+    rigid = function(parent, force, mass)
+    {
+      let rigidBody = engine.createObject(ObjectType.RIGID_BODY);
+      parent.addComponent(rigidBody);
+      rigidBody.mass = mass;
 
+      if (force) {
+        rigidBody.applyForce(force);
+      }
+      return rigidBody;
+    }
 
-        txt = etext(object, "Doobrovsky", "50px Arial", 750, 700)
-        sprite = esprite(object, 800, 640, 5, 0);
-        // let sprite2 = esprite(object, 400, 400, 5, 1);
-        // let sprite3 = esprite(object, 500, 400, 7, 2);
-        // let sprite4 = esprite(object, 300, 500, 5, 3);
-        // let sprite5 = esprite(object, 400, 500, 3, 4);
-        // let sprite6 = esprite(object, 500, 500, 7, 5, 256 / 8);
-        // let sprite7 = esprite(object, 300, 200, 7, 6, 256 / 8);
+    object = engine.createObject(ObjectType.OBJECT);
+    //       *
+    edot(object, 300, 9)
+    //    *  *  *
+    edot(object, 200, 109)
+    edot(object, 300, 109)
+    edot(object, 400, 109)
+    // *  *  *  *  *
+    edot(object, 100, 209)
+    edot(object, 200, 209)
+    edot(object, 300, 209)
+    edot(object, 400, 209)
+    edot(object, 500, 209)
+    //        *
+    edot(object, 300, 259, "brown")
+    //        *
+    edot(object, 300, 309, "brown")
 
-        warrior = ewarrior(object, 50, 130, 9, 0)
+    eimage(object, viking, 400, 0)
+    //
+    //
+    vikingParent = engine.createObject(ObjectType.OBJECT);
+    vikingObject = eimage(vikingParent, warriorImage, 0, 0)
 
-    })
+    txt = etext(object, "Doobrovsky", "50px Arial", 750, 700)
+    sprite = esprite(object, 800, 640, 5, 0);
+    let sprite2 = esprite(object, 400, 400, 5, 1);
+    let sprite3 = esprite(object, 500, 400, 7, 2);
+    let sprite4 = esprite(object, 300, 500, 5, 3);
+    let sprite5 = esprite(object, 400, 500, 3, 4);
+    let sprite6 = esprite(object, 500, 500, 7, 5, 256 / 8);
+    let sprite7 = esprite(object, 300, 200, 7, 6, 256 / 8);
+
+    warrior = ewarrior(object, 50, 130, 9, 0)
+
+    rigid(vikingParent, new Vector(0, -100), 1);
+  })
 </script>
 </body>
 </html>

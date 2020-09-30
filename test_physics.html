@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<canvas id="cnv" width="1024" height="768" style="background-color: darkgray"></canvas>
+
+<script type="application/javascript" src="dist/bundle.js">
+</script>
+<script>
+
+  let engine = new Engine();
+  engine.setCanvas(document.getElementById("cnv"))
+
+  let shooter = engine.loadImageAsset("test-assets/shooter_character.png", 256 * 4, 224 * 4);
+  Promise.all(
+    [
+      shooter.getPromise(),
+    ]
+  ).then(all => {
+
+    function edot(object, x, y, color)
+    {
+      let dot = engine.createObject(ObjectType.DOT_COMPONENT);
+      dot.position = new Vector(x, y)
+      dot.color = !color ? "green" : color;
+      object.addComponent(dot);
+      return dot;
+    }
+
+    rigid = function (parent, force, mass) {
+      let rigidBody = engine.createObject(ObjectType.RIGID_BODY);
+      parent.addComponent(rigidBody);
+      rigidBody.mass = mass;
+
+      if (force) {
+        rigidBody.applyForce(force);
+      }
+      return rigidBody;
+    }
+
+    object = engine.createObject(ObjectType.OBJECT);
+    dot = edot(object, 300, 9)
+
+    object2 = engine.createObject(ObjectType.OBJECT);
+    dot2 = edot(object2, 300, 9)
+
+    object.position = new Vector(0, 100);
+    object2.position = new Vector(100, 100);
+
+    body1 = rigid(object, new Vector(0, 0), 1);
+    body2 = rigid(object2, new Vector(0, -200), 1);
+
+  })
+</script>
+</body>
+</html>
